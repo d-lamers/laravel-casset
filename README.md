@@ -87,6 +87,12 @@ Casset::container('layout')->add('js/jquery.js');
 Casset::container('layout')->add('less/layout.less');
 ```
 
+Add an asset with variables to overwrite:
+
+```php
+Casset::add('less/variables.less',['variables' => ['brand-primary' => '#ccc']]);
+```
+
 Add an asset with a dependency on another asset:
 
 ```php
