@@ -1,11 +1,15 @@
 {
-    "name": "mmanos/laravel-casset",
+    "name": "d-lamers/laravel-casset",
     "description": "An asset management package for Laravel 4.",
     "keywords": ["laravel", "assets", "asset", "css", "javascript", "less", "compression", "minification"],
     "authors": [
         {
             "name": "Mark Manos",
             "email": "mark@airpac.com"
+        },
+        {
+            "name": "Dylan Lamers",
+            "email": "d.lamers@me.com"
         }
     ],
     "require": {
