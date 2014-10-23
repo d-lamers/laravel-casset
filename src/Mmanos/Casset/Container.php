@@ -151,11 +151,14 @@ class Container
 	 * 
 	 * @return Container
 	 */
-	public function add($source, array $attributes = array(), array $dependencies = array())
+	public function add($source, array $options = [],array $dependencies = [])
 	{
 		$ext = pathinfo($source, PATHINFO_EXTENSION);
-		
-		$this->assets[$source] = compact('ext', 'source', 'attributes', 'dependencies');
+		$this->assets[$source]['ext'] = $ext;
+        $this->assets[$source]['source'] = $source;
+        $this->assets[$source]['attributes'] = isset($options['atrributes']) ? $options['attributes'] : [];
+        $this->assets[$source]['variables'] = isset($options['variables']) ? $options['variables'] : false;
+        $this->assets[$source]['dependencies'] = $dependencies;
 	}
 	
 	/**
@@ -549,10 +552,11 @@ class Container
 		
 		$path        = $this->path($asset['source']);
 		$public_path = $this->publicPath($asset);
+        $variables   = $asset['variables'];
 		
 		if (empty(static::$processed[$asset['source']]) && $this->needsProcessing($asset)) {
 			if (File::exists($path)) {
-				File::put($public_path, $this->compile($path));
+				File::put($public_path, $this->compile($path,$variables));
 			}
 		}
 		
@@ -572,12 +576,20 @@ class Container
 	 * 
 	 * @return string
 	 */
-	public function compile($path)
+	public function compile($path,$variables = false)
 	{
 		switch (pathinfo($path, PATHINFO_EXTENSION)) {
 			case 'less':
 				$less = new Less_Parser;
-				$content = '/*' . md5(File::get($path)) . "*/\n" . $less->parseFile($path)->getCss();
+
+                $less->parseFile($path);
+                
+                if($variables){
+                    $less->modifyVars($variables);
+                }
+
+				$content = '/*' . md5(File::get($path)) . "*/\n".$less->getCss();
+                
 				
 				break;
 				
